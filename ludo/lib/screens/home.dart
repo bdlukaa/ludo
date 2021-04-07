@@ -76,6 +76,36 @@ class Home extends StatelessWidget {
             ),
           ),
         ),
+        // Games card
+        Expanded(
+          child: Card(
+            margin: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+            ),
+            child: Container(
+              padding: EdgeInsets.all(8.0),
+              child: DefaultTabController(
+                length: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TabBar(tabs: [
+                      Tab(text: 'NEW GAME'),
+                      Tab(text: 'GAME HISTORY'),
+                    ]),
+                    Expanded(
+                      child: TabBarView(children: [
+                        SizedBox(),
+                        SizedBox(),
+                      ]),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ]),
     );
   }
