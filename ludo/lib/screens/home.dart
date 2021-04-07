@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'new_game/new_game.dart';
+
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -10,7 +12,7 @@ class Home extends StatelessWidget {
         _HomeAppBar(),
         // Friends Card
         Card(
-          margin: const EdgeInsets.all(10.0),
+          margin: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Column(
@@ -79,7 +81,7 @@ class Home extends StatelessWidget {
         // Games card
         Expanded(
           child: Card(
-            margin: EdgeInsets.zero,
+            margin: EdgeInsets.only(top: 10.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
             ),
@@ -96,7 +98,7 @@ class Home extends StatelessWidget {
                     ]),
                     Expanded(
                       child: TabBarView(children: [
-                        SizedBox(),
+                        NewGame(),
                         SizedBox(),
                       ]),
                     ),
