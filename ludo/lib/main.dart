@@ -12,8 +12,22 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Ludo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        brightness: Brightness.dark,
+        primarySwatch: Colors.deepOrange,
+        accentColor: Colors.deepOrangeAccent,
+        appBarTheme: AppBarTheme(
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+        ),
+        cardTheme: CardTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          // color: Colors.deepOrange,
+        ),
       ),
+      debugShowCheckedModeBanner: false,
       home: Home(),
     );
   }
