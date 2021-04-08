@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'new_game/history.dart';
 import 'new_game/new_game.dart';
 
 class Home extends StatelessWidget {
@@ -99,7 +100,15 @@ class Home extends StatelessWidget {
                     Expanded(
                       child: TabBarView(children: [
                         NewGame(),
-                        SizedBox(),
+                        Builder(
+                          builder: (context) => GameHistory(
+                            onNewGame: () {
+                              final controller =
+                                  DefaultTabController.of(context);
+                              controller!.animateTo(0);
+                            },
+                          ),
+                        ),
                       ]),
                     ),
                   ],

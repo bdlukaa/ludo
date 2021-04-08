@@ -6,20 +6,22 @@ class NewGame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(padding: EdgeInsets.all(10), children: [
-      _NewGameTypeCard(
-        icon: FontAwesomeIcons.desktop,
-        text: 'VS COMPUTER',
-      ),
-      _NewGameTypeCard(
-        icon: FontAwesomeIcons.userFriends,
-        text: 'VS FRIENDS ',
-      ),
-      _NewGameTypeCard(
-        icon: FontAwesomeIcons.users,
-        text: 'VS RANDOM',
-      ),
-    ]);
+    return SafeArea(
+      child: ListView(padding: EdgeInsets.all(10), children: [
+        _NewGameTypeCard(
+          icon: FontAwesomeIcons.desktop,
+          text: 'vs COMPUTER',
+        ),
+        _NewGameTypeCard(
+          icon: FontAwesomeIcons.userFriends,
+          text: 'vs FRIENDS ',
+        ),
+        _NewGameTypeCard(
+          icon: FontAwesomeIcons.users,
+          text: 'vs RANDOM',
+        ),
+      ]),
+    );
   }
 }
 
