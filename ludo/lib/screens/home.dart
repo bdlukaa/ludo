@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'auth/sign_in.dart';
 import 'new_game/history.dart';
 import 'new_game/new_game.dart';
 
@@ -8,6 +9,10 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loggedIn = false;
+    if (!loggedIn) {
+      return SignIn();
+    }
     return Scaffold(
       body: Column(children: [
         _HomeAppBar(),
@@ -127,24 +132,26 @@ class _HomeAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(10.0),
-      child: Container(
-        height: 44.0,
-        padding: EdgeInsets.all(10.0),
-        alignment: Alignment.center,
-        child: Row(children: [
-          // IconButton(
-          //   icon: Icon(Icons.),
-          // ),
-          Expanded(
-            child: Text(
-              'LUDO',
-              style: Theme.of(context).textTheme.headline6,
+    return SafeArea(
+      child: Card(
+        margin: EdgeInsets.all(10.0),
+        child: Container(
+          height: 44.0,
+          padding: EdgeInsets.all(10.0),
+          alignment: Alignment.center,
+          child: Row(children: [
+            // IconButton(
+            //   icon: Icon(Icons.),
+            // ),
+            Expanded(
+              child: Text(
+                'LUDO',
+                style: Theme.of(context).textTheme.headline6,
+              ),
             ),
-          ),
-          CircleAvatar(),
-        ]),
+            CircleAvatar(),
+          ]),
+        ),
       ),
     );
   }

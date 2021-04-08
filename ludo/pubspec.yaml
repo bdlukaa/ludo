@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   font_awesome_flutter: ^9.0.0
+  auth_buttons: ^1.0.0
 
 dev_dependencies:
   flutter_test:
