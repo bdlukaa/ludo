@@ -12,10 +12,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Ludo',
       theme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.deepOrange,
-        accentColor: Colors.deepOrangeAccent,
+        primarySwatch: Colors.yellow,
+        accentColor: Colors.yellowAccent,
+        scaffoldBackgroundColor: Colors.lightBlue,
+        canvasColor: Colors.blue.shade200,
         cardTheme: CardTheme(
+          color: Colors.blue.shade600,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),

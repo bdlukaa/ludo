@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 
 const _ludoSpans = [
-  TextSpan(text: 'L', style: TextStyle(color: Colors.redAccent)),
+  TextSpan(text: 'L', style: TextStyle(color: Colors.red)),
   TextSpan(text: 'U', style: TextStyle(color: Colors.green)),
   TextSpan(text: 'D', style: TextStyle(color: Colors.blueAccent)),
   TextSpan(text: 'O', style: TextStyle(color: Colors.yellow)),

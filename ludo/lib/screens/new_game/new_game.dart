@@ -48,7 +48,7 @@ class _NewGameTypeCard extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(10.0),
           child: IconTheme(
-            data: IconThemeData(size: 48, color: Colors.white),
+            data: IconThemeData(size: 48),
             child: Row(children: [
               Column(children: [
                 Text(
