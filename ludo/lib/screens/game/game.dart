@@ -4,65 +4,74 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../utils/extensions.dart';
+
 const kBorderWidth = 0.5;
 double size = 24.0;
 double get houseSize => size * 6;
 
 const fighterIcon = FontAwesomeIcons.chessPawn;
 
-final List<Offset> blankPositions = <Offset>[
-  Offset(houseSize, 0),
-  Offset(houseSize + size, 0),
-  Offset(houseSize + size * 2, 0),
-  Offset(houseSize + size * 2, size * 1),
-  Offset(houseSize + size * 2, size * 2),
-  Offset(houseSize + size * 2, size * 3),
-  Offset(houseSize + size * 2, size * 4),
-  Offset(houseSize + size * 2, size * 5),
-  Offset(houseSize + size * 4, size * 6),
-  Offset(houseSize + size * 5, size * 6),
-  Offset(houseSize + size * 6, size * 6),
-  Offset(houseSize + size * 7, size * 6),
-  Offset(houseSize + size * 8, size * 6),
-  Offset(houseSize + size * 8, size * 7),
-  Offset(houseSize + size * 8, size * 8),
-  Offset(houseSize + size * 7, size * 8),
-  Offset(houseSize + size * 5, size * 8),
-  Offset(houseSize + size * 4, size * 8),
-  Offset(houseSize + size * 3, size * 8),
-  Offset(houseSize + size * 2, size * 9),
-  Offset(houseSize + size * 2, size * 10),
-  Offset(houseSize + size * 2, size * 11),
-  Offset(houseSize + size * 2, size * 12),
-  Offset(houseSize + size * 2, size * 13),
-  Offset(houseSize + size * 2, size * 14),
-  Offset(houseSize + size * 1, size * 14),
-  Offset(houseSize, size * 14),
-  Offset(houseSize, size * 13),
-  Offset(houseSize, size * 13),
-  Offset(houseSize, size * 12),
-  Offset(houseSize, size * 11),
-  Offset(houseSize, size * 10),
-  Offset(houseSize, size * 9),
-  Offset(size * 5, size * 8),
-  Offset(size * 4, size * 8),
-  Offset(size * 3, size * 8),
-  Offset(size * 1, size * 8),
-  Offset(size * 0, size * 8),
-  Offset(size * 0, size * 7),
-  Offset(size * 0, size * 6),
-  Offset(size * 1, size * 6),
-  Offset(size * 2, size * 6),
-  Offset(size * 3, size * 6),
-  Offset(size * 4, size * 6),
-  Offset(size * 5, size * 6),
-  Offset(size * 6, size * 5),
-  Offset(size * 6, size * 4),
-  Offset(size * 6, size * 3),
-  Offset(size * 6, size * 2),
-  Offset(size * 6, size * 1),
-  Offset(size * 6, size * 0),
-];
+List<Offset> get blankPositions => <Offset>[
+      Offset(houseSize, 0),
+      Offset(houseSize + size, 0),
+      Offset(houseSize + size * 2, 0),
+      Offset(houseSize + size * 2, size * 1),
+      Offset(houseSize + size * 2, size * 2),
+      Offset(houseSize + size * 2, size * 3),
+      Offset(houseSize + size * 2, size * 4),
+      Offset(houseSize + size * 2, size * 5),
+      Offset(houseSize + size * 3, size * 6),
+      Offset(houseSize + size * 4, size * 6),
+      Offset(houseSize + size * 5, size * 6),
+      Offset(houseSize + size * 6, size * 6),
+      Offset(houseSize + size * 7, size * 6),
+      Offset(houseSize + size * 8, size * 6),
+      Offset(houseSize + size * 8, size * 7),
+      Offset(houseSize + size * 8, size * 8),
+      Offset(houseSize + size * 7, size * 8),
+      Offset(houseSize + size * 6, size * 8),
+      Offset(houseSize + size * 5, size * 8),
+      Offset(houseSize + size * 4, size * 8),
+      Offset(houseSize + size * 3, size * 8),
+      Offset(houseSize + size * 2, size * 9),
+      Offset(houseSize + size * 2, size * 10),
+      Offset(houseSize + size * 2, size * 11),
+      Offset(houseSize + size * 2, size * 12),
+      Offset(houseSize + size * 2, size * 13),
+      Offset(houseSize + size * 2, size * 14),
+      Offset(houseSize + size * 1, size * 14),
+      Offset(houseSize, size * 14),
+      Offset(houseSize, size * 13),
+      Offset(houseSize, size * 13),
+      Offset(houseSize, size * 12),
+      Offset(houseSize, size * 11),
+      Offset(houseSize, size * 10),
+      Offset(houseSize, size * 9),
+      Offset(size * 5, size * 8),
+      Offset(size * 4, size * 8),
+      Offset(size * 3, size * 8),
+      Offset(size * 2, size * 8),
+      Offset(size * 1, size * 8),
+      Offset(size * 0, size * 8),
+      Offset(size * 0, size * 7),
+      Offset(size * 0, size * 6),
+      Offset(size * 1, size * 6),
+      Offset(size * 2, size * 6),
+      Offset(size * 3, size * 6),
+      Offset(size * 4, size * 6),
+      Offset(size * 5, size * 6),
+      Offset(size * 6, size * 5),
+      Offset(size * 6, size * 4),
+      Offset(size * 6, size * 3),
+      Offset(size * 6, size * 2),
+      Offset(size * 6, size * 1),
+    ];
+
+const firstIndex = 43;
+const secondIndex = 3;
+const thirdIndex = 29;
+const fourthIndex = 16;
 
 void applySize(BuildContext context, BoxConstraints consts) {
   size = consts.biggest.width / 15;
@@ -72,11 +81,18 @@ void applySize(BuildContext context, BoxConstraints consts) {
   }
 }
 
-get colors => [
+List<Color> get colors => [
       Colors.redAccent,
       Colors.green,
       Colors.blue.shade700,
       Colors.yellow,
+    ];
+
+List<Color> get fighterColors => [
+      Colors.red.shade700,
+      Colors.green.shade700,
+      Colors.blue,
+      Colors.amber.shade600,
     ];
 
 class Game extends StatelessWidget {
@@ -188,10 +204,15 @@ class GameBoard extends StatelessWidget {
   final List<int> fourthPositions;
 
   List<Offset> calculatePosition(List<int> positions, int container) {
-    late Offset first = Offset.zero;
-    late Offset second = Offset.zero;
-    late Offset third = Offset.zero;
-    late Offset fourth = Offset.zero;
+    Offset? first;
+    Offset? second;
+    Offset? third;
+    Offset? fourth;
+
+    Offset blankPosition(int position, index) {
+      return blankPositions.startAt(index)[position - 1];
+    }
+
     switch (container) {
       case 0:
         // Initial positions
@@ -207,6 +228,24 @@ class GameBoard extends StatelessWidget {
         if (positions[3] == 0) {
           fourth = Offset(size * 3.32, size * 3);
         }
+
+        if (positions[0] < 52)
+          first ??= blankPosition(firstIndex, positions[0]);
+        if (positions[1] < 52)
+          second ??= blankPosition(firstIndex, positions[1]);
+        if (positions[2] < 52)
+          third ??= blankPosition(firstIndex, positions[2]);
+        if (positions[3] < 52)
+          fourth ??= blankPosition(firstIndex, positions[3]);
+
+        if (positions[0] <= 58)
+          first ??= Offset(size * (positions[0] - 52), houseSize + size);
+        if (positions[1] <= 58)
+          second ??= Offset(size * (positions[0] - 52), houseSize + size);
+        if (positions[2] <= 58)
+          third ??= Offset(size * (positions[0] - 52), houseSize + size);
+        if (positions[3] <= 58)
+          fourth ??= Offset(size * (positions[0] - 52), houseSize + size);
         break;
       case 1:
         // Initial positions
@@ -223,6 +262,24 @@ class GameBoard extends StatelessWidget {
         if (positions[3] == 0) {
           fourth = Offset(factor + size * 3.32, size * 3);
         }
+
+        if (positions[0] < 52)
+          first ??= blankPosition(secondIndex, positions[0]);
+        if (positions[1] < 52)
+          second ??= blankPosition(secondIndex, positions[1]);
+        if (positions[2] < 52)
+          third ??= blankPosition(secondIndex, positions[2]);
+        if (positions[3] < 52)
+          fourth ??= blankPosition(secondIndex, positions[3]);
+
+        if (positions[0] <= 58)
+          first ??= Offset(houseSize + size, size * (positions[0] - 52));
+        if (positions[1] <= 58)
+          second ??= Offset(houseSize + size, size * (positions[1] - 52));
+        if (positions[2] <= 58)
+          third ??= Offset(houseSize + size, size * (positions[2] - 52));
+        if (positions[3] <= 58)
+          fourth ??= Offset(houseSize + size, size * (positions[3] - 52));
         break;
       case 2:
         // Initial positions
@@ -239,6 +296,36 @@ class GameBoard extends StatelessWidget {
         if (positions[3] == 0) {
           fourth = Offset(size * 3.32, factor + size * 3);
         }
+
+        if (positions[0] < 52)
+          first ??= blankPosition(thirdIndex, positions[0]);
+        if (positions[1] < 52)
+          second ??= blankPosition(thirdIndex, positions[1]);
+        if (positions[2] < 52)
+          third ??= blankPosition(thirdIndex, positions[2]);
+        if (positions[3] < 52)
+          fourth ??= blankPosition(thirdIndex, positions[3]);
+
+        if (positions[0] <= 58)
+          first ??= Offset(
+            houseSize + size,
+            factor + houseSize - size - size * (positions[0] - 52),
+          );
+        if (positions[1] <= 58)
+          second ??= Offset(
+            houseSize + size,
+            factor + houseSize - size - size * (positions[1] - 52),
+          );
+        if (positions[2] <= 58)
+          third ??= Offset(
+            houseSize + size,
+            factor + houseSize - size - size * (positions[2] - 52),
+          );
+        if (positions[3] <= 58)
+          fourth ??= Offset(
+            houseSize + size,
+            factor + houseSize - size - size * (positions[3] - 52),
+          );
         break;
       case 3:
         // Initial positions
@@ -255,8 +342,46 @@ class GameBoard extends StatelessWidget {
         if (positions[3] == 0) {
           fourth = Offset(factor + size * 3.32, factor + size * 3);
         }
+
+        if (positions[0] < 52)
+          first ??= blankPosition(fourthIndex, positions[0]);
+        if (positions[1] < 52)
+          second ??= blankPosition(fourthIndex, positions[1]);
+        if (positions[2] < 52)
+          third ??= blankPosition(fourthIndex, positions[2]);
+        if (positions[3] < 52)
+          fourth ??= blankPosition(fourthIndex, positions[3]);
+
+        if (positions[0] <= 58)
+          first ??= Offset(
+            factor + houseSize - size - size * (positions[0] - 52),
+            factor + houseSize,
+          );
+        if (positions[1] <= 58)
+          second ??= Offset(
+            factor + houseSize - size - size * (positions[1] - 52),
+            factor + houseSize,
+          );
+        if (positions[2] <= 58)
+          third ??= Offset(
+            factor + houseSize - size - size * (positions[2] - 52),
+            factor + houseSize,
+          );
+        if (positions[3] <= 58)
+          fourth ??= Offset(
+            factor + houseSize - size - size * (positions[3] - 52),
+            houseSize + size,
+          );
         break;
     }
+    assert(
+      first != null && second != null && third != null && fourth != null,
+      'You must provide a valid position from 0 to 58',
+    );
+    first ??= Offset.zero;
+    second ??= Offset.zero;
+    third ??= Offset.zero;
+    fourth ??= Offset.zero;
     return [first, second, third, fourth];
   }
 
@@ -352,18 +477,19 @@ class GameBoard extends StatelessWidget {
           ),
           // Numbers
           if (showNumbers)
-            ...blankPositions.map<Widget>((offset) {
+            ...List.generate(blankPositions.length, (index) {
+              final offset = blankPositions[index];
               return Positioned(
                 left: offset.dx,
                 top: offset.dy,
                 child: Text(
-                  '${blankPositions.indexOf(offset)}',
+                  '$index',
                   style: Theme.of(context).textTheme.overline,
                 ),
               );
             }),
           // Fighters
-          ...List<Widget>.generate(4, (container) {
+          ...List<Widget>.generate(positions.length, (container) {
             final offsets = calculatePosition(positions[container], container);
             return Positioned.fill(
               child: Stack(children: [
@@ -374,7 +500,7 @@ class GameBoard extends StatelessWidget {
                     top: offset.dy,
                     height: size,
                     width: size,
-                    child: Icon(fighterIcon, color: colors[container]),
+                    child: Icon(fighterIcon, color: fighterColors[container]),
                   );
                 })
               ]),
