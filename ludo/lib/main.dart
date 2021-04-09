@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.yellowAccent,
         scaffoldBackgroundColor: Colors.lightBlue,
         canvasColor: Colors.blue.shade200,
+        splashColor: Colors.yellowAccent,
         cardTheme: CardTheme(
           color: Colors.blue.shade600,
           shape: RoundedRectangleBorder(

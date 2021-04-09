@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../game/game.dart';
+
 class NewGame extends StatelessWidget {
   const NewGame({Key? key}) : super(key: key);
 
@@ -11,6 +13,11 @@ class NewGame extends StatelessWidget {
         _NewGameTypeCard(
           icon: FontAwesomeIcons.desktop,
           text: 'vs COMPUTER',
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Game(),
+            ));
+          },
         ),
         _NewGameTypeCard(
           icon: FontAwesomeIcons.userFriends,
