@@ -28,13 +28,14 @@ class Game extends StatelessWidget {
     BuildContext context,
     Color color, {
     bool reversed = false,
+    String name = 'PLAYER NAME',
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: () {
         final list = [
           Text(
-            'PLAYER NAME',
+            name,
             style: Theme.of(context).textTheme.subtitle2,
           ),
           Container(
@@ -110,10 +111,79 @@ class GameBoard extends StatelessWidget {
         width: size * 15,
         child: Stack(children: [
           Positioned.fill(child: CustomPaint(painter: BoardPainter())),
+          // Houses
           Positioned(left: size, top: size, child: BoardHouse()),
           Positioned(right: size, top: size, child: BoardHouse()),
           Positioned(left: size, bottom: size, child: BoardHouse()),
           Positioned(right: size, bottom: size, child: BoardHouse()),
+          // Arrows
+          Positioned(
+            top: houseSize + size,
+            height: size,
+            width: size,
+            child: Icon(Icons.keyboard_arrow_right, color: colors[0]),
+          ),
+          Positioned(
+            left: houseSize + size,
+            height: size,
+            width: size,
+            child: Icon(Icons.keyboard_arrow_down, color: colors[1]),
+          ),
+          Positioned(
+            left: houseSize + size,
+            bottom: 0,
+            height: size,
+            width: size,
+            child: Icon(Icons.keyboard_arrow_up, color: colors[2]),
+          ),
+          Positioned(
+            right: 0,
+            top: houseSize + size,
+            height: size,
+            width: size,
+            child: Icon(Icons.keyboard_arrow_left, color: colors[3]),
+          ),
+          // Checkpoints
+          Positioned(
+            left: size * 2,
+            bottom: houseSize,
+            height: size,
+            width: size,
+            child: Icon(
+              Icons.star_outline_rounded,
+              color: Theme.of(context).focusColor,
+            ),
+          ),
+          Positioned(
+            left: houseSize,
+            top: size * 2,
+            height: size,
+            width: size,
+            child: Icon(
+              Icons.star_outline_rounded,
+              color: Theme.of(context).focusColor,
+            ),
+          ),
+          Positioned(
+            right: houseSize,
+            bottom: size * 2,
+            height: size,
+            width: size,
+            child: Icon(
+              Icons.star_outline_rounded,
+              color: Theme.of(context).focusColor,
+            ),
+          ),
+          Positioned(
+            right: size * 2,
+            top: houseSize,
+            height: size,
+            width: size,
+            child: Icon(
+              Icons.star_outline_rounded,
+              color: Theme.of(context).focusColor,
+            ),
+          ),
         ]),
       ),
     );
