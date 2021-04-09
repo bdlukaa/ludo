@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -187,13 +188,76 @@ class GameBoard extends StatelessWidget {
   final List<int> fourthPositions;
 
   List<Offset> calculatePosition(List<int> positions, int container) {
+    late Offset first = Offset.zero;
+    late Offset second = Offset.zero;
+    late Offset third = Offset.zero;
+    late Offset fourth = Offset.zero;
     switch (container) {
+      case 0:
+        // Initial positions
+        if (positions[0] == 0) {
+          first = Offset(size + size / 1.5, size * 1.4);
+        }
+        if (positions[1] == 0) {
+          second = Offset(size * 3.32, size * 1.4);
+        }
+        if (positions[2] == 0) {
+          third = Offset(size + size / 1.5, size * 3);
+        }
+        if (positions[3] == 0) {
+          fourth = Offset(size * 3.32, size * 3);
+        }
+        break;
       case 1:
-        final poss = firstPositions;
-        return [Offset.zero, Offset.zero, Offset.zero, Offset.zero];
-      default:
-        return [Offset.zero, Offset.zero, Offset.zero, Offset.zero];
+        // Initial positions
+        final factor = houseSize + size * 3;
+        if (positions[0] == 0) {
+          first = Offset(factor + size + size / 1.5, size * 1.4);
+        }
+        if (positions[1] == 0) {
+          second = Offset(factor + size * 3.32, size * 1.4);
+        }
+        if (positions[2] == 0) {
+          third = Offset(factor + size + size / 1.5, size * 3);
+        }
+        if (positions[3] == 0) {
+          fourth = Offset(factor + size * 3.32, size * 3);
+        }
+        break;
+      case 2:
+        // Initial positions
+        final factor = houseSize + size * 3;
+        if (positions[0] == 0) {
+          first = Offset(size + size / 1.5, factor + size * 1.4);
+        }
+        if (positions[1] == 0) {
+          second = Offset(size * 3.32, factor + size * 1.4);
+        }
+        if (positions[2] == 0) {
+          third = Offset(size + size / 1.5, factor + size * 3);
+        }
+        if (positions[3] == 0) {
+          fourth = Offset(size * 3.32, factor + size * 3);
+        }
+        break;
+      case 3:
+        // Initial positions
+        final factor = houseSize + size * 3;
+        if (positions[0] == 0) {
+          first = Offset(factor + size + size / 1.5, factor + size * 1.4);
+        }
+        if (positions[1] == 0) {
+          second = Offset(factor + size * 3.32, factor + size * 1.4);
+        }
+        if (positions[2] == 0) {
+          third = Offset(factor + size + size / 1.5, factor + size * 3);
+        }
+        if (positions[3] == 0) {
+          fourth = Offset(factor + size * 3.32, factor + size * 3);
+        }
+        break;
     }
+    return [first, second, third, fourth];
   }
 
   List<List<int>> get positions => [
@@ -205,7 +269,7 @@ class GameBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showNumbers = true;
+    final showNumbers = kDebugMode;
     return Container(
       child: Container(
         color: Colors.white,
@@ -301,16 +365,20 @@ class GameBoard extends StatelessWidget {
           // Fighters
           ...List<Widget>.generate(4, (container) {
             final offsets = calculatePosition(positions[container], container);
-            return Stack(children: [
-              ...List<Widget>.generate(4, (index) {
-                final offset = offsets[index];
-                return Positioned(
-                  left: offset.dx,
-                  right: offset.dy,
-                  child: Icon(fighterIcon, color: colors[container]),
-                );
-              })
-            ]);
+            return Positioned.fill(
+              child: Stack(children: [
+                ...List<Widget>.generate(4, (index) {
+                  final offset = offsets[index];
+                  return Positioned(
+                    left: offset.dx,
+                    top: offset.dy,
+                    height: size,
+                    width: size,
+                    child: Icon(fighterIcon, color: colors[container]),
+                  );
+                })
+              ]),
+            );
           }),
         ]),
       ),
@@ -490,7 +558,7 @@ class BoardHouse extends StatelessWidget {
       height: size,
       width: size,
       decoration: BoxDecoration(
-        color: Colors.black38,
+        color: Colors.black12,
         borderRadius: BorderRadius.circular(12.0),
       ),
     );
