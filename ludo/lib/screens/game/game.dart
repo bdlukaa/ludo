@@ -1,12 +1,69 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 const kBorderWidth = 0.5;
 double size = 24.0;
 double get houseSize => size * 6;
 
-applySize(BuildContext context, BoxConstraints consts) {
+const fighterIcon = FontAwesomeIcons.chessPawn;
+
+final List<Offset> blankPositions = <Offset>[
+  Offset(houseSize, 0),
+  Offset(houseSize + size, 0),
+  Offset(houseSize + size * 2, 0),
+  Offset(houseSize + size * 2, size * 1),
+  Offset(houseSize + size * 2, size * 2),
+  Offset(houseSize + size * 2, size * 3),
+  Offset(houseSize + size * 2, size * 4),
+  Offset(houseSize + size * 2, size * 5),
+  Offset(houseSize + size * 4, size * 6),
+  Offset(houseSize + size * 5, size * 6),
+  Offset(houseSize + size * 6, size * 6),
+  Offset(houseSize + size * 7, size * 6),
+  Offset(houseSize + size * 8, size * 6),
+  Offset(houseSize + size * 8, size * 7),
+  Offset(houseSize + size * 8, size * 8),
+  Offset(houseSize + size * 7, size * 8),
+  Offset(houseSize + size * 5, size * 8),
+  Offset(houseSize + size * 4, size * 8),
+  Offset(houseSize + size * 3, size * 8),
+  Offset(houseSize + size * 2, size * 9),
+  Offset(houseSize + size * 2, size * 10),
+  Offset(houseSize + size * 2, size * 11),
+  Offset(houseSize + size * 2, size * 12),
+  Offset(houseSize + size * 2, size * 13),
+  Offset(houseSize + size * 2, size * 14),
+  Offset(houseSize + size * 1, size * 14),
+  Offset(houseSize, size * 14),
+  Offset(houseSize, size * 13),
+  Offset(houseSize, size * 13),
+  Offset(houseSize, size * 12),
+  Offset(houseSize, size * 11),
+  Offset(houseSize, size * 10),
+  Offset(houseSize, size * 9),
+  Offset(size * 5, size * 8),
+  Offset(size * 4, size * 8),
+  Offset(size * 3, size * 8),
+  Offset(size * 1, size * 8),
+  Offset(size * 0, size * 8),
+  Offset(size * 0, size * 7),
+  Offset(size * 0, size * 6),
+  Offset(size * 1, size * 6),
+  Offset(size * 2, size * 6),
+  Offset(size * 3, size * 6),
+  Offset(size * 4, size * 6),
+  Offset(size * 5, size * 6),
+  Offset(size * 6, size * 5),
+  Offset(size * 6, size * 4),
+  Offset(size * 6, size * 3),
+  Offset(size * 6, size * 2),
+  Offset(size * 6, size * 1),
+  Offset(size * 6, size * 0),
+];
+
+void applySize(BuildContext context, BoxConstraints consts) {
   size = consts.biggest.width / 15;
   while (size * 15 > MediaQuery.of(context).size.height ||
       size * 15 > MediaQuery.of(context).size.width) {
@@ -22,7 +79,18 @@ get colors => [
     ];
 
 class Game extends StatelessWidget {
-  const Game({Key? key}) : super(key: key);
+  const Game({
+    Key? key,
+    this.firstPositions = const [0, 0, 0, 0],
+    this.secondPositions = const [0, 0, 0, 0],
+    this.thirdPositions = const [0, 0, 0, 0],
+    this.fourthPositions = const [0, 0, 0, 0],
+  }) : super(key: key);
+
+  final List<int> firstPositions;
+  final List<int> secondPositions;
+  final List<int> thirdPositions;
+  final List<int> fourthPositions;
 
   Widget playerInfo(
     BuildContext context,
@@ -78,7 +146,12 @@ class Game extends StatelessWidget {
                         child: playerInfo(context, colors[1]),
                       ),
                     ]),
-                    GameBoard(),
+                    GameBoard(
+                      firstPositions: firstPositions,
+                      secondPositions: secondPositions,
+                      thirdPositions: thirdPositions,
+                      fourthPositions: fourthPositions,
+                    ),
                     Row(children: [
                       playerInfo(context, colors[2], reversed: true),
                       Spacer(),
@@ -100,10 +173,39 @@ class Game extends StatelessWidget {
 }
 
 class GameBoard extends StatelessWidget {
-  const GameBoard({Key? key}) : super(key: key);
+  const GameBoard({
+    Key? key,
+    required this.firstPositions,
+    required this.secondPositions,
+    required this.thirdPositions,
+    required this.fourthPositions,
+  }) : super(key: key);
+
+  final List<int> firstPositions;
+  final List<int> secondPositions;
+  final List<int> thirdPositions;
+  final List<int> fourthPositions;
+
+  List<Offset> calculatePosition(List<int> positions, int container) {
+    switch (container) {
+      case 1:
+        final poss = firstPositions;
+        return [Offset.zero, Offset.zero, Offset.zero, Offset.zero];
+      default:
+        return [Offset.zero, Offset.zero, Offset.zero, Offset.zero];
+    }
+  }
+
+  List<List<int>> get positions => [
+        firstPositions,
+        secondPositions,
+        thirdPositions,
+        fourthPositions,
+      ];
 
   @override
   Widget build(BuildContext context) {
+    final showNumbers = true;
     return Container(
       child: Container(
         color: Colors.white,
@@ -184,6 +286,32 @@ class GameBoard extends StatelessWidget {
               color: Theme.of(context).focusColor,
             ),
           ),
+          // Numbers
+          if (showNumbers)
+            ...blankPositions.map<Widget>((offset) {
+              return Positioned(
+                left: offset.dx,
+                top: offset.dy,
+                child: Text(
+                  '${blankPositions.indexOf(offset)}',
+                  style: Theme.of(context).textTheme.overline,
+                ),
+              );
+            }),
+          // Fighters
+          ...List<Widget>.generate(4, (container) {
+            final offsets = calculatePosition(positions[container], container);
+            return Stack(children: [
+              ...List<Widget>.generate(4, (index) {
+                final offset = offsets[index];
+                return Positioned(
+                  left: offset.dx,
+                  right: offset.dy,
+                  child: Icon(fighterIcon, color: colors[container]),
+                );
+              })
+            ]);
+          }),
         ]),
       ),
     );
