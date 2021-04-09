@@ -89,7 +89,10 @@ class GameBoard extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, consts) {
           size = consts.biggest.width / 15;
-          print(size * 15 > consts.biggest.height);
+          while (size * 15 > MediaQuery.of(context).size.height ||
+              size * 15 > MediaQuery.of(context).size.width) {
+            size -= 1;
+          }
           return Container(
             color: Colors.white,
             height: size * 15,
