@@ -6,74 +6,92 @@ const kBorderWidth = 0.5;
 double size = 24.0;
 double get houseSize => size * 6;
 
-const colors = [
-  Colors.red,
-  Colors.green,
-  Colors.blueAccent,
-  Colors.yellow,
-];
+applySize(BuildContext context, BoxConstraints consts) {
+  size = consts.biggest.width / 15;
+  while (size * 15 > MediaQuery.of(context).size.height ||
+      size * 15 > MediaQuery.of(context).size.width) {
+    size -= 1;
+  }
+}
+
+get colors => [
+      Colors.redAccent,
+      Colors.green,
+      Colors.blue.shade700,
+      Colors.yellow,
+    ];
 
 class Game extends StatelessWidget {
   const Game({Key? key}) : super(key: key);
+
+  Widget playerInfo(
+    BuildContext context,
+    Color color, {
+    bool reversed = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: () {
+        final list = [
+          Text(
+            'PLAYER NAME',
+            style: Theme.of(context).textTheme.subtitle2,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: EdgeInsets.all(6.0),
+            margin: EdgeInsets.symmetric(horizontal: 0, vertical: 6.0),
+            child: Row(children: [
+              CircleAvatar(),
+            ]),
+          ),
+        ];
+        if (reversed) return list.reversed.toList();
+        return list;
+      }(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Column(children: [
-            Spacer(),
-            Column(children: [
-              // Row(children: [
-              //   Container(
-              //     width: houseSize,
-              //     decoration: BoxDecoration(
-              //       color: colors[0],
-              //       borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-              //     ),
-              //     padding: EdgeInsets.all(6.0),
-              //     child: Text('hehe'),
-              //   ),
-              //   Spacer(),
-              //   Container(
-              //     width: houseSize,
-              //     decoration: BoxDecoration(
-              //       color: colors[1],
-              //       borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-              //     ),
-              //     padding: EdgeInsets.all(6.0),
-              //     child: Text('hehe'),
-              //   ),
-              // ]),
-              GameBoard(),
-              // Row(children: [
-              //   Container(
-              //     width: houseSize,
-              //     decoration: BoxDecoration(
-              //       color: colors[2],
-              //       borderRadius: BorderRadius.vertical(
-              //         bottom: Radius.circular(10),
-              //       ),
-              //     ),
-              //     padding: EdgeInsets.all(6.0),
-              //     child: Text('hehe'),
-              //   ),
-              //   Spacer(),
-              //   Container(
-              //     width: houseSize,
-              //     decoration: BoxDecoration(
-              //       color: colors[3],
-              //       borderRadius: BorderRadius.vertical(
-              //         bottom: Radius.circular(10),
-              //       ),
-              //     ),
-              //     padding: EdgeInsets.all(6.0),
-              //     child: Text('hehe'),
-              //   ),
-              // ]),
-            ]),
-            Spacer(),
-          ]),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: LayoutBuilder(
+            builder: (context, s) {
+              applySize(context, s);
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Spacer(),
+                  Column(children: [
+                    Row(children: [
+                      playerInfo(context, colors[0]),
+                      Spacer(),
+                      Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: playerInfo(context, colors[1]),
+                      ),
+                    ]),
+                    GameBoard(),
+                    Row(children: [
+                      playerInfo(context, colors[2], reversed: true),
+                      Spacer(),
+                      Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: playerInfo(context, colors[3], reversed: true),
+                      ),
+                    ]),
+                  ]),
+                  Spacer(),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -86,26 +104,17 @@ class GameBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: LayoutBuilder(
-        builder: (context, consts) {
-          size = consts.biggest.width / 15;
-          while (size * 15 > MediaQuery.of(context).size.height ||
-              size * 15 > MediaQuery.of(context).size.width) {
-            size -= 1;
-          }
-          return Container(
-            color: Colors.white,
-            height: size * 15,
-            width: size * 15,
-            child: Stack(children: [
-              Positioned.fill(child: CustomPaint(painter: BoardPainter())),
-              Positioned(left: size, top: size, child: BoardHouse()),
-              Positioned(right: size, top: size, child: BoardHouse()),
-              Positioned(left: size, bottom: size, child: BoardHouse()),
-              Positioned(right: size, bottom: size, child: BoardHouse()),
-            ]),
-          );
-        },
+      child: Container(
+        color: Colors.white,
+        height: size * 15,
+        width: size * 15,
+        child: Stack(children: [
+          Positioned.fill(child: CustomPaint(painter: BoardPainter())),
+          Positioned(left: size, top: size, child: BoardHouse()),
+          Positioned(right: size, top: size, child: BoardHouse()),
+          Positioned(left: size, bottom: size, child: BoardHouse()),
+          Positioned(right: size, bottom: size, child: BoardHouse()),
+        ]),
       ),
     );
   }
@@ -143,6 +152,7 @@ class BoardPainter extends CustomPainter {
       ..lineTo(houseSize + size * 3, houseSize)
       ..lineTo(houseSize * 2 + size * 3, houseSize)
       ..lineTo(houseSize * 2 + size * 3, 0)
+      ..lineTo(s.width, 0)
       ..moveTo(houseSize, houseSize)
       ..lineTo(houseSize + size * 3, houseSize)
       ..lineTo(houseSize + size + size / 2, houseSize + size + size / 2)
