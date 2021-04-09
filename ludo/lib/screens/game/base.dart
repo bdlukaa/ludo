@@ -98,16 +98,25 @@ List<Color> get fighterColors => [
 class Game extends StatelessWidget {
   const Game({
     Key? key,
-    this.firstPositions = const [0, 0, 0, 0],
+    this.firstPositions,
     this.secondPositions = const [0, 0, 0, 0],
     this.thirdPositions = const [0, 0, 0, 0],
-    this.fourthPositions = const [0, 0, 0, 0],
+    this.fourthPositions,
+    required this.onFirstChanged,
+    required this.onSecondChanged,
+    required this.onThirdChanged,
+    required this.onFourthChanged,
   }) : super(key: key);
 
-  final List<int> firstPositions;
+  final List<int>? firstPositions;
   final List<int> secondPositions;
   final List<int> thirdPositions;
-  final List<int> fourthPositions;
+  final List<int>? fourthPositions;
+
+  final ValueChanged<List<int>> onFirstChanged;
+  final ValueChanged<List<int>> onSecondChanged;
+  final ValueChanged<List<int>> onThirdChanged;
+  final ValueChanged<List<int>> onFourthChanged;
 
   Widget playerInfo(
     BuildContext context,
@@ -123,17 +132,29 @@ class Game extends StatelessWidget {
             name,
             style: Theme.of(context).textTheme.subtitle2,
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(10),
+          Row(children: [
+            Container(
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(6.0),
+              margin: EdgeInsets.symmetric(horizontal: 0, vertical: 6.0),
+              child: Row(children: [
+                CircleAvatar(),
+              ]),
             ),
-            padding: EdgeInsets.all(6.0),
-            margin: EdgeInsets.symmetric(horizontal: 0, vertical: 6.0),
-            child: Row(children: [
-              CircleAvatar(),
-            ]),
-          ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 6.0),
+              padding: EdgeInsets.all(6.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(6.0),
+              ),
+              alignment: Alignment.center,
+              child: FaIcon(FontAwesomeIcons.diceFive),
+            ),
+          ]),
         ];
         if (reversed) return list.reversed.toList();
         return list;
@@ -156,7 +177,8 @@ class Game extends StatelessWidget {
                   Spacer(),
                   Column(children: [
                     Row(children: [
-                      playerInfo(context, colors[0]),
+                      if (firstPositions != null)
+                        playerInfo(context, colors[0]),
                       Spacer(),
                       Directionality(
                         textDirection: TextDirection.rtl,
@@ -164,18 +186,23 @@ class Game extends StatelessWidget {
                       ),
                     ]),
                     GameBoard(
-                      firstPositions: firstPositions,
+                      firstPositions: firstPositions ?? [100, 100, 100, 100],
                       secondPositions: secondPositions,
                       thirdPositions: thirdPositions,
-                      fourthPositions: fourthPositions,
+                      fourthPositions: fourthPositions ?? [100, 100, 100, 100],
+                      onFirstChanged: (v) {},
+                      onSecondChanged: (v) {},
+                      onThirdChanged: (v) {},
+                      onFourthChanged: (v) {},
                     ),
                     Row(children: [
                       playerInfo(context, colors[2], reversed: true),
                       Spacer(),
-                      Directionality(
-                        textDirection: TextDirection.rtl,
-                        child: playerInfo(context, colors[3], reversed: true),
-                      ),
+                      if (fourthPositions != null)
+                        Directionality(
+                          textDirection: TextDirection.rtl,
+                          child: playerInfo(context, colors[3], reversed: true),
+                        ),
                     ]),
                   ]),
                   Spacer(),
@@ -196,12 +223,21 @@ class GameBoard extends StatelessWidget {
     required this.secondPositions,
     required this.thirdPositions,
     required this.fourthPositions,
+    required this.onFirstChanged,
+    required this.onSecondChanged,
+    required this.onThirdChanged,
+    required this.onFourthChanged,
   }) : super(key: key);
 
   final List<int> firstPositions;
   final List<int> secondPositions;
   final List<int> thirdPositions;
   final List<int> fourthPositions;
+
+  final ValueChanged<List<int>> onFirstChanged;
+  final ValueChanged<List<int>> onSecondChanged;
+  final ValueChanged<List<int>> onThirdChanged;
+  final ValueChanged<List<int>> onFourthChanged;
 
   List<Offset> calculatePosition(List<int> positions, int container) {
     Offset? first;
@@ -374,14 +410,10 @@ class GameBoard extends StatelessWidget {
           );
         break;
     }
-    assert(
-      first != null && second != null && third != null && fourth != null,
-      'You must provide a valid position from 0 to 58',
-    );
-    first ??= Offset.zero;
-    second ??= Offset.zero;
-    third ??= Offset.zero;
-    fourth ??= Offset.zero;
+    first ??= Offset(-size, -size);
+    second ??= Offset(-size, -size);
+    third ??= Offset(-size, -size);
+    fourth ??= Offset(-size, -size);
     return [first, second, third, fourth];
   }
 
@@ -395,6 +427,7 @@ class GameBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showNumbers = kDebugMode;
+    final showFighterHitbox = false;
     return Container(
       child: Container(
         color: Colors.white,
@@ -500,7 +533,18 @@ class GameBoard extends StatelessWidget {
                     top: offset.dy,
                     height: size,
                     width: size,
-                    child: Icon(fighterIcon, color: fighterColors[container]),
+                    child: GestureDetector(
+                      onTap: () => _handleFighterTapped(container, index),
+                      child: Container(
+                        color: showFighterHitbox
+                            ? Colors.black26
+                            : Colors.transparent,
+                        child: Icon(
+                          fighterIcon,
+                          color: fighterColors[container],
+                        ),
+                      ),
+                    ),
                   );
                 })
               ]),
@@ -509,6 +553,12 @@ class GameBoard extends StatelessWidget {
         ]),
       ),
     );
+  }
+
+  void _handleFighterTapped(int container, int number) {
+    final position = positions[container][number];
+    final offset = calculatePosition(positions[container], container)[number];
+    print('fighter tapped $position $offset');
   }
 }
 

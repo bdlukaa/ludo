@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../game/game.dart';
+import '../game/controllers/computer.dart';
 
 class NewGame extends StatelessWidget {
   const NewGame({Key? key}) : super(key: key);
@@ -15,7 +15,7 @@ class NewGame extends StatelessWidget {
           text: 'vs COMPUTER',
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => Game(),
+              builder: (context) => ComputerGame(),
             ));
           },
         ),
