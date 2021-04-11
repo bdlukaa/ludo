@@ -216,78 +216,76 @@ class Game extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: LayoutBuilder(builder: (context, s) {
-            applySize(context, s);
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Spacer(),
-                Column(children: [
-                  Row(children: [
-                    if (firstPositions != null)
-                      playerInfo(
-                        context,
-                        colors[0],
-                        onRollDice: () => onRollDice(0),
-                        dice: firstDice,
-                      ),
-                    Spacer(),
+      body: Padding(
+        padding: MediaQuery.of(context).viewPadding.add(EdgeInsets.all(8.0)),
+        child: LayoutBuilder(builder: (context, s) {
+          applySize(context, s);
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Spacer(),
+              Column(children: [
+                Row(children: [
+                  if (firstPositions != null)
+                    playerInfo(
+                      context,
+                      colors[0],
+                      onRollDice: () => onRollDice(0),
+                      dice: firstDice,
+                    ),
+                  Spacer(),
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: playerInfo(
+                      context,
+                      colors[1],
+                      onRollDice: () => onRollDice(1),
+                      dice: secondDice,
+                    ),
+                  ),
+                ]),
+                GameBoard(
+                  firstPositions: firstPositions ?? [100, 100, 100, 100],
+                  secondPositions: secondPositions,
+                  thirdPositions: thirdPositions,
+                  fourthPositions: fourthPositions ?? [100, 100, 100, 100],
+                  onFighterTapped: (container, number, index) {
+                    print(
+                        'tapped fighter $index in container $container at position $number');
+                    if (container == 2) {
+                      if (number == 58) return;
+                      onThirdChanged(
+                        thirdPositions.toList()..[index] = number + 1,
+                      );
+                    }
+                  },
+                ),
+                Row(children: [
+                  playerInfo(
+                    context,
+                    colors[2],
+                    reversed: true,
+                    onRollDice: () => onRollDice(2),
+                    dice: thirdDice,
+                  ),
+                  Spacer(),
+                  if (fourthPositions != null)
                     Directionality(
                       textDirection: TextDirection.rtl,
                       child: playerInfo(
                         context,
-                        colors[1],
-                        onRollDice: () => onRollDice(1),
-                        dice: secondDice,
+                        colors[3],
+                        reversed: true,
+                        onRollDice: () => onRollDice(3),
+                        dice: fourthDice,
                       ),
                     ),
-                  ]),
-                  GameBoard(
-                    firstPositions: firstPositions ?? [100, 100, 100, 100],
-                    secondPositions: secondPositions,
-                    thirdPositions: thirdPositions,
-                    fourthPositions: fourthPositions ?? [100, 100, 100, 100],
-                    onFighterTapped: (container, number, index) {
-                      print(
-                          'tapped fighter $index in container $container at position $number');
-                      if (container == 2) {
-                        if (number == 58) return;
-                        onThirdChanged(
-                          thirdPositions.toList()..[index] = number + 1,
-                        );
-                      }
-                    },
-                  ),
-                  Row(children: [
-                    playerInfo(
-                      context,
-                      colors[2],
-                      reversed: true,
-                      onRollDice: () => onRollDice(2),
-                      dice: thirdDice,
-                    ),
-                    Spacer(),
-                    if (fourthPositions != null)
-                      Directionality(
-                        textDirection: TextDirection.rtl,
-                        child: playerInfo(
-                          context,
-                          colors[3],
-                          reversed: true,
-                          onRollDice: () => onRollDice(3),
-                          dice: fourthDice,
-                        ),
-                      ),
-                  ]),
                 ]),
-                Spacer(),
-              ],
-            );
-          }),
-        ),
+              ]),
+              Spacer(),
+            ],
+          );
+        }),
       ),
     );
   }
