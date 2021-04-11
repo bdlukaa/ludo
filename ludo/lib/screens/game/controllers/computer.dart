@@ -39,39 +39,95 @@ class _ComputerGameState extends State<ComputerGame> {
   @override
   Widget build(BuildContext context) {
     print('turn: $turn cdice: $computerDice pdice: $dice');
-    return Game(
-      firstPositions: [14, 14, 14, 14],
-      thirdPositions: firstPositions,
-      secondPositions: secondPositions,
-      fourthPositions: [41, 41, 41, 41],
-      onFirstChanged: (v) {},
-      onSecondChanged: (v) {},
-      onThirdChanged: (v) async {
-        if (isPlayerTurn) {
-          final position = getDifferentIndex(firstPositions, v);
-          for (var i = 0; i < dice; i++) {
-            setState(() => firstPositions[position] += 1);
-            await Future.delayed(
-              figherAnimationDuration + Duration(milliseconds: 15),
-            );
-          }
-          setState(() {
-            dice = 0;
-            turn = 1;
-          });
-          computerPlay();
-        }
-      },
-      onFourthChanged: (v) {},
-      secondDice: computerDice,
-      thirdDice: dice,
-      onRollDice: (container) async {
-        // Check if it's player turn and make sure the dice is not getting rolled twice
-        if (container == 2 && isPlayerTurn && dice == 0) {
-          await rollDice((value) => setState(() => dice = value));
-          print('dice $dice');
-        }
-      },
+    return Scaffold(
+      backgroundColor: Colors.deepPurple,
+      body: Column(children: [
+        AnimatedSwitcher(
+          duration: kThemeAnimationDuration,
+          layoutBuilder: (child, children) => child!,
+          transitionBuilder: (child, animation) {
+            return ScaleTransition(scale: animation, child: child);
+          },
+          child: ShaderMask(
+            shaderCallback: (rect) {
+              final colors = fightersGradients[isPlayerTurn ? 2 : 1];
+              return LinearGradient(
+                colors: [
+                  colors.shade200,
+                  colors.shade300,
+                  colors.shade400,
+                  colors.shade500,
+                  colors.shade600,
+                ],
+                tileMode: TileMode.mirror,
+              ).createShader(rect);
+            },
+            child: Text(
+              isPlayerTurn ? 'YOUR TURN' : 'COMPUTER\'s TURN',
+              key: ValueKey<int>(turn),
+              style: TextStyle(
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Game(
+            thirdHighlight: [
+              canMoveFighter(firstPositions[0], dice),
+              canMoveFighter(firstPositions[1], dice),
+              canMoveFighter(firstPositions[2], dice),
+              canMoveFighter(firstPositions[3], dice),
+            ],
+            secondHighlight: [
+              canMoveFighter(secondPositions[0], computerDice),
+              canMoveFighter(secondPositions[1], computerDice),
+              canMoveFighter(secondPositions[2], computerDice),
+              canMoveFighter(secondPositions[3], computerDice),
+            ],
+            thirdPositions: firstPositions,
+            secondPositions: secondPositions,
+            onFirstChanged: (v) {},
+            onSecondChanged: (v) {},
+            onThirdChanged: (v) async {
+              if (isPlayerTurn) {
+                final position = getDifferentIndex(firstPositions, v);
+                for (var i = 0; i < dice; i++) {
+                  setState(() => firstPositions[position] += 1);
+                  await Future.delayed(
+                    figherAnimationDuration + Duration(milliseconds: 15),
+                  );
+                }
+                setState(() {
+                  dice = 0;
+                  turn = 1;
+                });
+                computerPlay();
+              }
+            },
+            onFourthChanged: (v) {},
+            secondDice: computerDice,
+            thirdDice: dice,
+            onRollDice: (container) async {
+              // Check if it's player turn and make sure the dice is not getting rolled twice
+              if (container == 2 && isPlayerTurn && dice == 0) {
+                await rollDice((value) => setState(() => dice = value));
+                print('dice $dice');
+              }
+            },
+          ),
+        ),
+      ]),
+      bottomNavigationBar: SizedBox(
+        height: 48,
+        child: AppBar(
+          backgroundColor: Colors.deepPurpleAccent,
+          elevation: 0,
+          foregroundColor: Colors.white,
+        ),
+      ),
     );
   }
 
@@ -112,4 +168,18 @@ Future<void> rollDice(ValueChanged<int> onDice) async {
       Duration(milliseconds: math.Random().nextInt(50) + 200),
     );
   }
+}
+
+bool canMoveFighter(int position, int dice) {
+  if (dice == 0) return false;
+  if (position == 0 && dice != 6) return false;
+  if (position + dice > 57) return false;
+  return false;
+}
+
+bool canMoveAnyFighter(List<int> positions, int dice) {
+  for (final position in positions) {
+    if (!canMoveFighter(position, dice)) return false;
+  }
+  return true;
 }

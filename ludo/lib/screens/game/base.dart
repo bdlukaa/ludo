@@ -44,7 +44,6 @@ List<Offset> get blankPositions => <Offset>[
       Offset(houseSize + size * 1, size * 14),
       Offset(houseSize, size * 14),
       Offset(houseSize, size * 13),
-      Offset(houseSize, size * 13),
       Offset(houseSize, size * 12),
       Offset(houseSize, size * 11),
       Offset(houseSize, size * 10),
@@ -96,6 +95,13 @@ List<Color> get fighterColors => [
       Colors.amber.shade600,
     ];
 
+List<MaterialColor> get fightersGradients => [
+      Colors.red,
+      Colors.green,
+      Colors.blue,
+      Colors.amber,
+    ];
+
 class Game extends StatelessWidget {
   const Game({
     Key? key,
@@ -112,6 +118,10 @@ class Game extends StatelessWidget {
     this.thirdDice = 0,
     this.fourthDice = 0,
     required this.onRollDice,
+    this.firstHighlight,
+    this.secondHighlight,
+    this.thirdHighlight,
+    this.fourthHighlight,
   }) : super(key: key);
 
   final List<int>? firstPositions;
@@ -130,6 +140,11 @@ class Game extends StatelessWidget {
   final int fourthDice;
 
   final ValueChanged<int> onRollDice;
+
+  final List<bool>? firstHighlight;
+  final List<bool>? secondHighlight;
+  final List<bool>? thirdHighlight;
+  final List<bool>? fourthHighlight;
 
   Widget playerInfo(
     BuildContext context,
@@ -213,78 +228,81 @@ class Game extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: MediaQuery.of(context).viewPadding.add(EdgeInsets.all(8.0)),
-        child: LayoutBuilder(builder: (context, s) {
-          applySize(context, s);
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Spacer(),
-              Column(children: [
-                Row(children: [
-                  if (firstPositions != null)
-                    playerInfo(
-                      context,
-                      colors[0],
-                      onRollDice: () => onRollDice(0),
-                      dice: firstDice,
-                    ),
-                  Spacer(),
+    return Padding(
+      padding: MediaQuery.of(context).viewPadding.add(EdgeInsets.all(8.0)),
+      child: LayoutBuilder(builder: (context, s) {
+        applySize(context, s);
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Spacer(),
+            Column(children: [
+              Row(children: [
+                if (firstPositions != null)
+                  playerInfo(
+                    context,
+                    colors[0],
+                    onRollDice: () => onRollDice(0),
+                    dice: firstDice,
+                  ),
+                Spacer(),
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: playerInfo(
+                    context,
+                    colors[1],
+                    onRollDice: () => onRollDice(1),
+                    dice: secondDice,
+                  ),
+                ),
+              ]),
+              GameBoard(
+                firstPositions: firstPositions ?? [100, 100, 100, 100],
+                secondPositions: secondPositions,
+                thirdPositions: thirdPositions,
+                fourthPositions: fourthPositions ?? [100, 100, 100, 100],
+                onFighterTapped: (container, number, index) {
+                  print(
+                    'tapped fighter $index in container $container at position $number',
+                  );
+                  if (container == 2) {
+                    if (number == 58) return;
+                    onThirdChanged(
+                      thirdPositions.toList()..[index] = number + 1,
+                    );
+                  }
+                },
+                firstHighlight: firstHighlight,
+                secondHighlight: secondHighlight,
+                thirdHighlight: thirdHighlight,
+                fourthHighlight: fourthHighlight,
+              ),
+              Row(children: [
+                playerInfo(
+                  context,
+                  colors[2],
+                  reversed: true,
+                  onRollDice: () => onRollDice(2),
+                  dice: thirdDice,
+                ),
+                Spacer(),
+                if (fourthPositions != null)
                   Directionality(
                     textDirection: TextDirection.rtl,
                     child: playerInfo(
                       context,
-                      colors[1],
-                      onRollDice: () => onRollDice(1),
-                      dice: secondDice,
+                      colors[3],
+                      reversed: true,
+                      onRollDice: () => onRollDice(3),
+                      dice: fourthDice,
                     ),
                   ),
-                ]),
-                GameBoard(
-                  firstPositions: firstPositions ?? [100, 100, 100, 100],
-                  secondPositions: secondPositions,
-                  thirdPositions: thirdPositions,
-                  fourthPositions: fourthPositions ?? [100, 100, 100, 100],
-                  onFighterTapped: (container, number, index) {
-                    print(
-                        'tapped fighter $index in container $container at position $number');
-                    if (container == 2) {
-                      if (number == 58) return;
-                      onThirdChanged(
-                        thirdPositions.toList()..[index] = number + 1,
-                      );
-                    }
-                  },
-                ),
-                Row(children: [
-                  playerInfo(
-                    context,
-                    colors[2],
-                    reversed: true,
-                    onRollDice: () => onRollDice(2),
-                    dice: thirdDice,
-                  ),
-                  Spacer(),
-                  if (fourthPositions != null)
-                    Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: playerInfo(
-                        context,
-                        colors[3],
-                        reversed: true,
-                        onRollDice: () => onRollDice(3),
-                        dice: fourthDice,
-                      ),
-                    ),
-                ]),
               ]),
-              Spacer(),
-            ],
-          );
-        }),
-      ),
+            ]),
+            Spacer(),
+          ],
+        );
+      }),
     );
   }
 }
@@ -297,6 +315,10 @@ class GameBoard extends StatelessWidget {
     required this.thirdPositions,
     required this.fourthPositions,
     required this.onFighterTapped,
+    this.firstHighlight,
+    this.secondHighlight,
+    this.thirdHighlight,
+    this.fourthHighlight,
   }) : super(key: key);
 
   final List<int> firstPositions;
@@ -305,6 +327,11 @@ class GameBoard extends StatelessWidget {
   final List<int> fourthPositions;
 
   final void Function(int container, int number, int index) onFighterTapped;
+
+  final List<bool>? firstHighlight;
+  final List<bool>? secondHighlight;
+  final List<bool>? thirdHighlight;
+  final List<bool>? fourthHighlight;
 
   List<Offset> calculatePosition(List<int> positions, int container) {
     Offset? first;
@@ -593,6 +620,20 @@ class GameBoard extends StatelessWidget {
           ...List<Widget>.generate(positions.length, (container) {
             final offsets = calculatePosition(positions[container], container);
 
+            bool containerHighlighted = () {
+              switch (container) {
+                case 0:
+                  return firstHighlight != null;
+                case 1:
+                  return secondHighlight != null;
+                case 2:
+                  return thirdHighlight != null;
+                case 3:
+                  return fourthHighlight != null;
+              }
+              return false;
+            }();
+
             int amountAtPosition(Offset offset) {
               int amount = 0;
               for (var i = 0; i < positions.length; i++) {
@@ -609,43 +650,88 @@ class GameBoard extends StatelessWidget {
             return Positioned.fill(
               child: Stack(
                   children: List<Widget>.generate(4, (index) {
-                    currentIndex++;
+                bool highlighted = containerHighlighted &&
+                    () {
+                      switch (container) {
+                        case 0:
+                          return firstHighlight![index];
+                        case 1:
+                          return secondHighlight![index];
+                        case 2:
+                          return thirdHighlight![index];
+                        case 3:
+                          return fourthHighlight![index];
+                      }
+                      return false;
+                    }();
+                currentIndex++;
                 final offset = offsets[index];
                 final atPosition = amountAtPosition(offset);
-                return AnimatedPositioned(
-                  duration: figherAnimationDuration,
-                  left: offset.dx + () {
-                    if (atPosition == 1) return 0;
-                    double value = (currentIndex - index * atPosition).toDouble();
-                    if (container.isEven && index.isOdd) value += index;
-                    if (index.isEven && container.isOdd) value = -value;
-                    return value.clamp(-15, 35);
-                  }(),
-                  top: offset.dy - () {
-                    if (atPosition == 1) return 0;
-                    double value = (currentIndex - index * atPosition).toDouble();
-                    if (container.isEven && index.isOdd) value += index;
-                    if (index.isEven && container.isOdd) value = -value;
-                    return value.clamp(-15, 35);
-                  } (),
-                  height: size,
-                  width: size,
-                  child: GestureDetector(
-                    key: ValueKey<String>('#$container$index'),
-                    onTap: () {
-                      _handleFighterTapped(container, index);
-                    },
-                    child: Container(
-                      color: showFighterHitbox
-                          ? Colors.black26
-                          : Colors.transparent,
-                      child: Icon(
-                        fighterIcon,
-                        color: fighterColors[container],
-                        size: atPosition == 1 ? 24 : (atPosition * 2.0 - atPosition).clamp(16, 24),
-                      ),
+                Widget child = GestureDetector(
+                  key: ValueKey<String>('#$container$index'),
+                  onTap: () {
+                    _handleFighterTapped(container, index);
+                  },
+                  child: Container(
+                    color:
+                        showFighterHitbox ? Colors.black26 : Colors.transparent,
+                    child: Icon(
+                      fighterIcon,
+                      color: fighterColors[container],
+                      size: atPosition == 1
+                          ? 24
+                          : (atPosition * 2.0 - atPosition).clamp(16, 24),
                     ),
                   ),
+                );
+                if (highlighted) {
+                  final gradientColor = fightersGradients[container];
+                  child = ShaderMask(
+                    shaderCallback: (rect) {
+                      return RadialGradient(
+                        center: Alignment.topLeft,
+                        colors: [
+                          gradientColor.shade50,
+                          gradientColor.shade100,
+                          gradientColor.shade200,
+                          gradientColor.shade300,
+                          gradientColor.shade400,
+                          gradientColor.shade500,
+                          gradientColor.shade600,
+                          gradientColor.shade700,
+                          gradientColor.shade800,
+                          gradientColor.shade900,
+                        ],
+                        radius: 1.0,
+                        tileMode: TileMode.mirror,
+                      ).createShader(rect);
+                    },
+                    child: child,
+                  );
+                }
+                return AnimatedPositioned(
+                  duration: figherAnimationDuration,
+                  left: offset.dx +
+                      () {
+                        if (atPosition == 1) return 0;
+                        double value =
+                            (currentIndex - index * atPosition).toDouble();
+                        if (container.isEven && index.isOdd) value += index;
+                        if (index.isEven && container.isOdd) value = -value;
+                        return value.clamp(-15, 35);
+                      }(),
+                  top: offset.dy -
+                      () {
+                        if (atPosition == 1) return 0;
+                        double value =
+                            (currentIndex - index * atPosition).toDouble();
+                        if (container.isEven && index.isOdd) value += index;
+                        if (index.isEven && container.isOdd) value = -value;
+                        return value.clamp(-15, 35);
+                      }(),
+                  height: size,
+                  width: size,
+                  child: child,
                 );
               })),
             );
