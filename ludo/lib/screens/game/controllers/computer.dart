@@ -28,10 +28,10 @@ class _ComputerGameState extends State<ComputerGame> {
   }
 
   /// The positions of the player
-  List<int> firstPositions = [0, 0, 0, 0];
+  List<int> firstPositions = [28, 0, 0, 0];
 
   /// The position of the computer
-  List<int> secondPositions = [0, 0, 0, 0];
+  List<int> secondPositions = [1, 0, 0, 0];
 
   int computerDice = 0;
   int dice = 0;
@@ -40,8 +40,10 @@ class _ComputerGameState extends State<ComputerGame> {
   Widget build(BuildContext context) {
     print('turn: $turn cdice: $computerDice pdice: $dice');
     return Game(
+      firstPositions: [14, 14, 14, 14],
       thirdPositions: firstPositions,
       secondPositions: secondPositions,
+      fourthPositions: [41, 41, 41, 41],
       onFirstChanged: (v) {},
       onSecondChanged: (v) {},
       onThirdChanged: (v) async {
@@ -64,7 +66,8 @@ class _ComputerGameState extends State<ComputerGame> {
       secondDice: computerDice,
       thirdDice: dice,
       onRollDice: (container) async {
-        if (container == 2 && isPlayerTurn) {
+        // Check if it's player turn and make sure the dice is not getting rolled twice
+        if (container == 2 && isPlayerTurn && dice == 0) {
           await rollDice((value) => setState(() => dice = value));
           print('dice $dice');
         }

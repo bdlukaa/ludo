@@ -6,8 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../utils/extensions.dart';
 
-// TODO: stacked fighters
-
 const kBorderWidth = 0.5;
 double size = 24.0;
 double get houseSize => size * 6;
@@ -495,6 +493,7 @@ class GameBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int currentIndex = 0;
     final showNumbers = kDebugMode;
     final showFighterHitbox = false;
     return Container(
@@ -593,34 +592,62 @@ class GameBoard extends StatelessWidget {
           // Fighters
           ...List<Widget>.generate(positions.length, (container) {
             final offsets = calculatePosition(positions[container], container);
+
+            int amountAtPosition(Offset offset) {
+              int amount = 0;
+              for (var i = 0; i < positions.length; i++) {
+                final container = i;
+                final offsets =
+                    calculatePosition(positions[container], container);
+                offsets.forEach((off) {
+                  if (offset == off) amount++;
+                });
+              }
+              return amount;
+            }
+
             return Positioned.fill(
-              child: Stack(children: [
-                ...List<Widget>.generate(4, (index) {
-                  final offset = offsets[index];
-                  return AnimatedPositioned(
-                    duration: figherAnimationDuration,
-                    left: offset.dx,
-                    top: offset.dy,
-                    height: size,
-                    width: size,
-                    child: GestureDetector(
-                      key: ValueKey<String>('#$container$index'),
-                      onTap: () {
-                        _handleFighterTapped(container, index);
-                      },
-                      child: Container(
-                        color: showFighterHitbox
-                            ? Colors.black26
-                            : Colors.transparent,
-                        child: Icon(
-                          fighterIcon,
-                          color: fighterColors[container],
-                        ),
+              child: Stack(
+                  children: List<Widget>.generate(4, (index) {
+                    currentIndex++;
+                final offset = offsets[index];
+                final atPosition = amountAtPosition(offset);
+                return AnimatedPositioned(
+                  duration: figherAnimationDuration,
+                  left: offset.dx + () {
+                    if (atPosition == 1) return 0;
+                    double value = (currentIndex - index * atPosition).toDouble();
+                    if (container.isEven && index.isOdd) value += index;
+                    if (index.isEven && container.isOdd) value = -value;
+                    return value.clamp(-15, 35);
+                  }(),
+                  top: offset.dy - () {
+                    if (atPosition == 1) return 0;
+                    double value = (currentIndex - index * atPosition).toDouble();
+                    if (container.isEven && index.isOdd) value += index;
+                    if (index.isEven && container.isOdd) value = -value;
+                    return value.clamp(-15, 35);
+                  } (),
+                  height: size,
+                  width: size,
+                  child: GestureDetector(
+                    key: ValueKey<String>('#$container$index'),
+                    onTap: () {
+                      _handleFighterTapped(container, index);
+                    },
+                    child: Container(
+                      color: showFighterHitbox
+                          ? Colors.black26
+                          : Colors.transparent,
+                      child: Icon(
+                        fighterIcon,
+                        color: fighterColors[container],
+                        size: atPosition == 1 ? 24 : (atPosition * 2.0 - atPosition).clamp(16, 24),
                       ),
                     ),
-                  );
-                })
-              ]),
+                  ),
+                );
+              })),
             );
           }),
         ]),
@@ -630,7 +657,6 @@ class GameBoard extends StatelessWidget {
 
   void _handleFighterTapped(int container, int number) {
     final position = positions[container][number];
-    // final offset = calculatePosition(positions[container], container)[number];
     onFighterTapped(container, position, number);
   }
 }
