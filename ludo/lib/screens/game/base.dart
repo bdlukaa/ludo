@@ -6,6 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../utils/extensions.dart';
 
+// TODO: animate fighters when moving. Step by step
+
 const kBorderWidth = 0.5;
 double size = 24.0;
 double get houseSize => size * 6;
@@ -106,6 +108,11 @@ class Game extends StatelessWidget {
     required this.onSecondChanged,
     required this.onThirdChanged,
     required this.onFourthChanged,
+    this.firstDice = 0,
+    this.secondDice = 0,
+    this.thirdDice = 0,
+    this.fourthDice = 0,
+    required this.onRollDice,
   }) : super(key: key);
 
   final List<int>? firstPositions;
@@ -118,11 +125,20 @@ class Game extends StatelessWidget {
   final ValueChanged<List<int>> onThirdChanged;
   final ValueChanged<List<int>> onFourthChanged;
 
+  final int firstDice;
+  final int secondDice;
+  final int thirdDice;
+  final int fourthDice;
+
+  final ValueChanged<int> onRollDice;
+
   Widget playerInfo(
     BuildContext context,
     Color color, {
     bool reversed = false,
     String name = 'PLAYER NAME',
+    int dice = 0,
+    VoidCallback? onRollDice,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,14 +161,48 @@ class Game extends StatelessWidget {
               ]),
             ),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 6.0),
-              padding: EdgeInsets.all(6.0),
-              decoration: BoxDecoration(
+              height: 35,
+              // width: 45,
+              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+              child: Material(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(6.0),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(6.0),
+                  onTap: onRollDice,
+                  child: Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: AnimatedSwitcher(
+                      duration: Duration(milliseconds: 160),
+                      transitionBuilder: (child, animation) {
+                        return ScaleTransition(scale: animation, child: child);
+                      },
+                      child: FaIcon(
+                        () {
+                          switch (dice) {
+                            case 0:
+                              return FontAwesomeIcons.dice;
+                            case 1:
+                              return FontAwesomeIcons.diceOne;
+                            case 2:
+                              return FontAwesomeIcons.diceTwo;
+                            case 3:
+                              return FontAwesomeIcons.diceThree;
+                            case 4:
+                              return FontAwesomeIcons.diceFour;
+                            case 5:
+                              return FontAwesomeIcons.diceFive;
+                            case 6:
+                              return FontAwesomeIcons.diceSix;
+                          }
+                        }(),
+                        color: Colors.grey[120],
+                        key: ValueKey<int>(dice),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              alignment: Alignment.center,
-              child: FaIcon(FontAwesomeIcons.diceFive),
             ),
           ]),
         ];
@@ -168,48 +218,74 @@ class Game extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: LayoutBuilder(
-            builder: (context, s) {
-              applySize(context, s);
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Spacer(),
-                  Column(children: [
-                    Row(children: [
-                      if (firstPositions != null)
-                        playerInfo(context, colors[0]),
-                      Spacer(),
+          child: LayoutBuilder(builder: (context, s) {
+            applySize(context, s);
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Spacer(),
+                Column(children: [
+                  Row(children: [
+                    if (firstPositions != null)
+                      playerInfo(
+                        context,
+                        colors[0],
+                        onRollDice: () => onRollDice(0),
+                        dice: firstDice,
+                      ),
+                    Spacer(),
+                    Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: playerInfo(
+                        context,
+                        colors[1],
+                        onRollDice: () => onRollDice(1),
+                        dice: secondDice,
+                      ),
+                    ),
+                  ]),
+                  GameBoard(
+                    firstPositions: firstPositions ?? [100, 100, 100, 100],
+                    secondPositions: secondPositions,
+                    thirdPositions: thirdPositions,
+                    fourthPositions: fourthPositions ?? [100, 100, 100, 100],
+                    onFighterTapped: (container, number, index) {
+                      print(
+                          'tapped fighter $index in container $container at position $number');
+                      if (container == 2) {
+                        if (number == 58) return;
+                        onThirdChanged(
+                          thirdPositions.toList()..[index] = number + 1,
+                        );
+                      }
+                    },
+                  ),
+                  Row(children: [
+                    playerInfo(
+                      context,
+                      colors[2],
+                      reversed: true,
+                      onRollDice: () => onRollDice(2),
+                      dice: thirdDice,
+                    ),
+                    Spacer(),
+                    if (fourthPositions != null)
                       Directionality(
                         textDirection: TextDirection.rtl,
-                        child: playerInfo(context, colors[1]),
-                      ),
-                    ]),
-                    GameBoard(
-                      firstPositions: firstPositions ?? [100, 100, 100, 100],
-                      secondPositions: secondPositions,
-                      thirdPositions: thirdPositions,
-                      fourthPositions: fourthPositions ?? [100, 100, 100, 100],
-                      onFirstChanged: (v) {},
-                      onSecondChanged: (v) {},
-                      onThirdChanged: (v) {},
-                      onFourthChanged: (v) {},
-                    ),
-                    Row(children: [
-                      playerInfo(context, colors[2], reversed: true),
-                      Spacer(),
-                      if (fourthPositions != null)
-                        Directionality(
-                          textDirection: TextDirection.rtl,
-                          child: playerInfo(context, colors[3], reversed: true),
+                        child: playerInfo(
+                          context,
+                          colors[3],
+                          reversed: true,
+                          onRollDice: () => onRollDice(3),
+                          dice: fourthDice,
                         ),
-                    ]),
+                      ),
                   ]),
-                  Spacer(),
-                ],
-              );
-            },
-          ),
+                ]),
+                Spacer(),
+              ],
+            );
+          }),
         ),
       ),
     );
@@ -223,10 +299,7 @@ class GameBoard extends StatelessWidget {
     required this.secondPositions,
     required this.thirdPositions,
     required this.fourthPositions,
-    required this.onFirstChanged,
-    required this.onSecondChanged,
-    required this.onThirdChanged,
-    required this.onFourthChanged,
+    required this.onFighterTapped,
   }) : super(key: key);
 
   final List<int> firstPositions;
@@ -234,10 +307,7 @@ class GameBoard extends StatelessWidget {
   final List<int> thirdPositions;
   final List<int> fourthPositions;
 
-  final ValueChanged<List<int>> onFirstChanged;
-  final ValueChanged<List<int>> onSecondChanged;
-  final ValueChanged<List<int>> onThirdChanged;
-  final ValueChanged<List<int>> onFourthChanged;
+  final void Function(int container, int number, int index) onFighterTapped;
 
   List<Offset> calculatePosition(List<int> positions, int container) {
     Offset? first;
@@ -534,7 +604,10 @@ class GameBoard extends StatelessWidget {
                     height: size,
                     width: size,
                     child: GestureDetector(
-                      onTap: () => _handleFighterTapped(container, index),
+                      key: ValueKey<String>('#$container$index'),
+                      onTap: () {
+                        _handleFighterTapped(container, index);
+                      },
                       child: Container(
                         color: showFighterHitbox
                             ? Colors.black26
@@ -557,8 +630,8 @@ class GameBoard extends StatelessWidget {
 
   void _handleFighterTapped(int container, int number) {
     final position = positions[container][number];
-    final offset = calculatePosition(positions[container], container)[number];
-    print('fighter tapped $position $offset');
+    // final offset = calculatePosition(positions[container], container)[number];
+    onFighterTapped(container, position, number);
   }
 }
 
