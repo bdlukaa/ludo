@@ -21,6 +21,7 @@ class _ComputerGameState extends State<ComputerGame> {
   void initState() {
     super.initState();
     turn = math.Random().nextInt(1);
+    print('first turn: $turn');
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       computerPlay();
     });
@@ -43,11 +44,16 @@ class _ComputerGameState extends State<ComputerGame> {
       secondPositions: secondPositions,
       onFirstChanged: (v) {},
       onSecondChanged: (v) {},
-      onThirdChanged: (v) {
+      onThirdChanged: (v) async {
         if (isPlayerTurn) {
+          final position = getDifferentIndex(firstPositions, v);
+          for (var i = 0; i < dice; i++) {
+            setState(() => firstPositions[position] += 1);
+            await Future.delayed(
+              figherAnimationDuration + Duration(milliseconds: 15),
+            );
+          }
           setState(() {
-            final differentIndex = getDifferentIndex(firstPositions, v);
-            firstPositions[differentIndex] += dice;
             dice = 0;
             turn = 1;
           });
@@ -70,11 +76,18 @@ class _ComputerGameState extends State<ComputerGame> {
     if (!isComputerTurn) return;
     print('computer played');
     await rollDice((value) => setState(() => computerDice = value));
-    secondPositions.first += computerDice;
-    if (secondPositions[0] < 58) secondPositions[0] += computerDice;
-    else if (secondPositions[1] < 58) secondPositions[1] += computerDice;
-    else if (secondPositions[2] < 58) secondPositions[2] += computerDice;
-    else if (secondPositions[3] < 58) secondPositions[3] += computerDice;
+
+    /// Position math]
+    final position =
+        secondPositions.indexOf(secondPositions.firstWhere((n) => n < 58));
+    computerDice =
+        computerDice.clamp(1, 6); // make sure the position is on bounds
+    for (var i = 0; i < computerDice; i++) {
+      setState(() => secondPositions[position] += 1);
+      await Future.delayed(
+          figherAnimationDuration + Duration(milliseconds: 15));
+    }
+
     computerDice = 0;
     turn = 0;
     setState(() {});

@@ -6,13 +6,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../utils/extensions.dart';
 
-// TODO: animate fighters when moving. Step by step
+// TODO: stacked fighters
 
 const kBorderWidth = 0.5;
 double size = 24.0;
 double get houseSize => size * 6;
 
 const fighterIcon = FontAwesomeIcons.chessPawn;
+const figherAnimationDuration = Duration(milliseconds: 250);
 
 List<Offset> get blankPositions => <Offset>[
       Offset(houseSize, 0),
@@ -598,7 +599,8 @@ class GameBoard extends StatelessWidget {
               child: Stack(children: [
                 ...List<Widget>.generate(4, (index) {
                   final offset = offsets[index];
-                  return Positioned(
+                  return AnimatedPositioned(
+                    duration: figherAnimationDuration,
                     left: offset.dx,
                     top: offset.dy,
                     height: size,
