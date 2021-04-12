@@ -20,7 +20,7 @@ class _ComputerGameState extends State<ComputerGame> {
   @override
   void initState() {
     super.initState();
-    turn = math.Random().nextInt(1);
+    turn = math.Random().nextInt(2).clamp(0, 1);
     print('first turn: $turn');
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       computerPlay();
@@ -28,10 +28,10 @@ class _ComputerGameState extends State<ComputerGame> {
   }
 
   /// The positions of the player
-  List<int> firstPositions = [28, 0, 0, 0];
+  List<int> firstPositions = [0, 0, 0, 0];
 
   /// The position of the computer
-  List<int> secondPositions = [1, 0, 0, 0];
+  List<int> secondPositions = [0, 0, 0, 0];
 
   int computerDice = 0;
   int dice = 0;
@@ -114,7 +114,15 @@ class _ComputerGameState extends State<ComputerGame> {
               // Check if it's player turn and make sure the dice is not getting rolled twice
               if (container == 2 && isPlayerTurn && dice == 0) {
                 await rollDice((value) => setState(() => dice = value));
-                print('dice $dice');
+                if (!canMoveAnyFighter(firstPositions, dice)) {
+                  print('not a valid dice. next turn');
+                  setState(() {
+                    dice = 0;
+                    turn = 1;
+                  });
+                  computerPlay();
+                } else
+                  print('dice $dice');
               }
             },
           ),
@@ -136,16 +144,20 @@ class _ComputerGameState extends State<ComputerGame> {
     print('computer played');
     await rollDice((value) => setState(() => computerDice = value));
 
-    /// Position math]
-    final position =
-        secondPositions.indexOf(secondPositions.firstWhere((n) => n < 58));
-    computerDice =
-        computerDice.clamp(1, 6); // make sure the position is on bounds
-    for (var i = 0; i < computerDice; i++) {
-      setState(() => secondPositions[position] += 1);
-      await Future.delayed(
-          figherAnimationDuration + Duration(milliseconds: 15));
-    }
+    if (canMoveAnyFighter(secondPositions, computerDice)) {
+      /// Position math]
+      final position =
+          secondPositions.indexOf(secondPositions.firstWhere((n) => n < 58));
+      computerDice =
+          computerDice.clamp(1, 6); // make sure the position is on bounds
+      for (var i = 0; i < computerDice; i++) {
+        setState(() => secondPositions[position] += 1);
+        await Future.delayed(
+          figherAnimationDuration + Duration(milliseconds: 15),
+        );
+      }
+    } else
+      print('not a valid dice. next turn');
 
     computerDice = 0;
     turn = 0;
@@ -163,18 +175,19 @@ int getDifferentIndex(List<int> one, List<int> two) {
 
 Future<void> rollDice(ValueChanged<int> onDice) async {
   for (var i = 0; i < math.Random().nextInt(8).clamp(5, 8); i++) {
-    onDice(math.Random().nextInt(5) + 1);
+    onDice((math.Random().nextInt(6) + 1).clamp(1, 6));
     await Future.delayed(
-      Duration(milliseconds: math.Random().nextInt(50) + 200),
+      Duration(milliseconds: math.Random().nextInt(50) + 250),
     );
   }
+  await Future.delayed(Duration(milliseconds: 800));
 }
 
 bool canMoveFighter(int position, int dice) {
   if (dice == 0) return false;
   if (position == 0 && dice != 6) return false;
   if (position + dice > 57) return false;
-  return false;
+  return true;
 }
 
 bool canMoveAnyFighter(List<int> positions, int dice) {
