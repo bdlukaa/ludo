@@ -17,6 +17,8 @@ class _ComputerGameState extends State<ComputerGame> {
   bool get isPlayerTurn => turn == 0;
   bool get isComputerTurn => turn == 1;
 
+  int playsInARow = 0;
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +40,7 @@ class _ComputerGameState extends State<ComputerGame> {
 
   @override
   Widget build(BuildContext context) {
-    print('turn: $turn cdice: $computerDice pdice: $dice');
+    print('turn: $turn cdice: $computerDice pdice: $dice row: $playsInARow');
     return Scaffold(
       backgroundColor: Colors.deepPurple,
       body: Column(children: [
@@ -49,6 +51,7 @@ class _ComputerGameState extends State<ComputerGame> {
             return ScaleTransition(scale: animation, child: child);
           },
           child: ShaderMask(
+            key: ValueKey<int>(turn),
             shaderCallback: (rect) {
               final colors = fightersGradients[isPlayerTurn ? 2 : 1];
               return LinearGradient(
@@ -64,7 +67,6 @@ class _ComputerGameState extends State<ComputerGame> {
             },
             child: Text(
               isPlayerTurn ? 'YOUR TURN' : 'COMPUTER\'s TURN',
-              key: ValueKey<int>(turn),
               style: TextStyle(
                 fontSize: 35,
                 fontWeight: FontWeight.bold,
@@ -92,7 +94,7 @@ class _ComputerGameState extends State<ComputerGame> {
             onFirstChanged: (v) {},
             onSecondChanged: (v) {},
             onThirdChanged: (v) async {
-              if (isPlayerTurn) {
+              if (isPlayerTurn && dice != 0) {
                 final position = getDifferentIndex(firstPositions, v);
                 for (var i = 0; i < dice; i++) {
                   setState(() => firstPositions[position] += 1);
@@ -101,8 +103,14 @@ class _ComputerGameState extends State<ComputerGame> {
                   );
                 }
                 setState(() {
+                  if (dice == 6 && playsInARow < 3) {
+                    turn = 0;
+                    playsInARow++;
+                  } else {
+                    turn = 1;
+                    playsInARow = 0;
+                  }
                   dice = 0;
-                  turn = 1;
                 });
                 computerPlay();
               }
@@ -156,11 +164,19 @@ class _ComputerGameState extends State<ComputerGame> {
           figherAnimationDuration + Duration(milliseconds: 15),
         );
       }
-    } else
+      if (dice == 6 && playsInARow < 3) {
+        turn = 1;
+        playsInARow++;
+      } else {
+        turn = 0;
+        playsInARow = 0;
+      }
+    } else {
       print('not a valid dice. next turn');
+      turn = 0;
+    }
 
     computerDice = 0;
-    turn = 0;
     setState(() {});
   }
 }
@@ -192,7 +208,7 @@ bool canMoveFighter(int position, int dice) {
 
 bool canMoveAnyFighter(List<int> positions, int dice) {
   for (final position in positions) {
-    if (!canMoveFighter(position, dice)) return false;
+    if (canMoveFighter(position, dice)) return true;
   }
-  return true;
+  return false;
 }
